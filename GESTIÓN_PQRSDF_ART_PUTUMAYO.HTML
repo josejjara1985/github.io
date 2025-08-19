@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión PQR</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            padding-bottom: 60px; /* Espacio para el footer */
+            position: relative;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding-bottom: 80px; /* Espacio para el footer dentro del contenedor */
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px 5px 0 0;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .nav-tabs li {
+            margin-right: 10px;
+        }
+        .nav-tabs li a {
+            display: block;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            text-decoration: none;
+            color: #333;
+        }
+        .nav-tabs li a.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+            margin-bottom: -1px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        select.form-control {
+            height: 36px;
+        }
+        .btn {
+            padding: 8px 15px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #1a252f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .alert-baja {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert-media {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .alert-inmediata {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .alert-vencida {
+            background-color: #721c24;
+            color: white;
+        }
+        .user-type {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+        .login-container {
+            width: 400px;
+            margin: 100px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        .holiday-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .audit-log {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        .log-timestamp {
+            color: #666;
+            font-size: 12px;
+        }
+        .export-buttons {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+        .export-btn {
+            padding: 8px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .export-btn.excel {
+            background-color: #217346;
+        }
+        .export-btn.pdf {
+            background-color: #d23333;
+        }
+        .export-btn i {
+            font-style: normal;
+        }
+        .footer-signature {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px;
+            color: #666;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #f8f9fa;
+            border-top: 1px solid #ddd;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .remember-me input {
+            margin-right: 10px;
+        }
+        .acknowledge-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .acknowledge-btn.no {
+            background-color: #f44336;
+        }
+    </style>
+    <!-- Librerías para exportación -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div id="login-container" class="login-container">
+        <h2 class="login-title">Iniciar Sesión</h2>
+        <div class="form-group">
+            <label for="login-username">Usuario:</label>
+            <input type="text" id="login-username" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="login-password">Contraseña:</label>
+            <input type="password" id="login-password" class="form-control">
+        </div>
+        <div class="remember-me">
+            <input type="checkbox" id="remember-me">
+            <label for="remember-me">Recordar credenciales</label>
+        </div>
+        <button id="login-btn" class="btn">Ingresar</button>
+    </div>
+
+    <div id="main-container" class="container" style="display: none;">
+        <header>
+            <h1>GESTIÓN PQRSDF</h1>
+            <div id="user-info" style="float: right; color: white; font-size: 14px;"></div>
+            <div style="clear: both;"></div>
+        </header>
+
+        <ul class="nav-tabs">
+            <li><a href="#" class="tab-link active" data-tab="register">Registrar PQR</a></li>
+            <li><a href="#" class="tab-link" data-tab="consult">Consultar PQR</a></li>
+            <li><a href="#" class="tab-link" data-tab="users" id="users-tab">Usuarios</a></li>
+            <li><a href="#" class="tab-link" data-tab="audit" id="audit-tab">Auditoría</a></li>
+            <li style="float: right;"><a href="#" id="logout-btn">Cerrar Sesión</a></li>
+        </ul>
+
+        <div id="register" class="tab-content active">
+            <form id="pqr-form">
+                <div class="form-group">
+                    <label for="pqr-type">Tipo de PQR:</label>
+                    <select id="pqr-type" class="form-control" required>
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Consulta">Consulta</option>
+                        <option value="Denuncia">Denuncia</option>
+                        <option value="Especial">Especial</option>
+                        <option value="Petición">Petición</option>
+                        <option value="Petición con enfoque diferencial">Petición con enfoque diferencial</option>
+                        <option value="Queja">Queja</option>
+                        <option value="Reclamo">Reclamo</option>
+                        <option value="Solicitud de congresista">Solicitud de congresista</option>
+                        <option value="Solicitud de entidad pública">Solicitud de entidad pública</option>
+                        <option value="Solicitud de información o documentos">Solicitud de información o documentos</option>
+                        <option value="Traslado por competencia">Traslado por competencia</option>
+                        <option value="Sugerencia">Sugerencia</option>
+                        <option value="Felicitaciones">Felicitaciones</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="response-time">Tiempo de respuesta (días hábiles):</label>
+                    <input type="number" id="response-time" class="form-control" readonly>
+                    <div class="holiday-info">* No se cuentan sábados, domingos ni días festivos</div>
+                </div>
+
+                <div class="form-group" id="special-time-group" style="display: none;">
+                    <label for="special-time">Término especial (días hábiles):</label>
+                    <input type="number" id="special-time" class="form-control">
+                    <div class="holiday-info">* No se cuentan sábados, domingos ni días festivos</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registration-date">Fecha de Registro:</label>
+                    <input type="date" id="registration-date" class="form-control" required>
+                    <div class="holiday-info">* Se usará la fecha actual si no se especifica</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="petitioner-name">Nombre del peticionario:</label>
+                    <input type="text" id="petitioner-name" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="petitioner-id">Identificación:</label>
+                    <input type="text" id="petitioner-id" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="petitioner-email">Correo electrónico:</label>
+                    <input type="email" id="petitioner-email" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="petitioner-phone">Teléfono:</label>
+                    <input type="tel" id="petitioner-phone" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="pqr-description">Descripción:</label>
+                    <textarea id="pqr-description" class="form-control" rows="5"></textarea>
+                </div>
+
+                <button type="submit" class="btn">Registrar PQR</button>
+            </form>
+        </div>
+
+        <div id="consult" class="tab-content">
+            <div class="export-buttons">
+                <button id="export-excel-btn" class="export-btn excel">
+                    <i>↓</i> Exportar a Excel
+                </button>
+                <button id="export-pdf-btn" class="export-btn pdf">
+                    <i>↓</i> Exportar a PDF
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label for="search-filter">Filtrar por:</label>
+                <select id="search-filter" class="form-control">
+                    <option value="all">Todos</option>
+                    <option value="pending">Pendientes</option>
+                    <option value="completed">Completados</option>
+                    <option value="alert-baja">Alertas Bajas</option>
+                    <option value="alert-media">Alertas Medias</option>
+                    <option value="alert-inmediata">Alertas Inmediatas</option>
+                    <option value="alert-vencida">Vencidas</option>
+                </select>
+            </div>
+
+            <div id="alerts-summary">
+                <h3>Resumen de Alertas</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <div style="flex: 1; padding: 10px; background-color: #d4edda; border-radius: 5px;">
+                        <strong>Bajas:</strong> <span id="baja-count">0</span>
+                    </div>
+                    <div style="flex: 1; padding: 10px; background-color: #fff3cd; border-radius: 5px;">
+                        <strong>Medias:</strong> <span id="media-count">0</span>
+                    </div>
+                    <div style="flex: 1; padding: 10px; background-color: #f8d7da; border-radius: 5px;">
+                        <strong>Inmediatas:</strong> <span id="inmediata-count">0</span>
+                    </div>
+                    <div style="flex: 1; padding: 10px; background-color: #721c24; color: white; border-radius: 5px;">
+                        <strong>Vencidas:</strong> <span id="vencida-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <table id="pqr-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Peticionario</th>
+                        <th>Fecha Registro</th>
+                        <th>Fecha Vencimiento</th>
+                        <th>Estado</th>
+                        <th>Alerta</th>
+                        <th>Acuse Recibido</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se llenarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="users" class="tab-content">
+            <div id="admin-controls" style="display: none;">
+                <h3>Crear Nuevo Usuario</h3>
+                <form id="user-form">
+                    <div class="form-group">
+                        <label for="new-username">Nombre de usuario:</label>
+                        <input type="text" id="new-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-fullname">Nombre completo:</label>
+                        <input type="text" id="new-fullname" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-role">Tipo de usuario:</label>
+                        <select id="new-role" class="form-control" required>
+                            <option value="writer">Solo escritura</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Crear Usuario</button>
+                </form>
+            </div>
+
+            <h3>Lista de Usuarios</h3>
+            <table id="users-table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Nombre Completo</th>
+                        <th>Tipo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se llenarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="audit" class="tab-content">
+            <h3>Registro de Auditoría</h3>
+            <button id="export-audit-btn" class="btn">Exportar Auditoría (PDF)</button>
+            <div id="audit-log" class="audit-log">
+                <!-- Registros de auditoría se mostrarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-signature">
+        Creado por: Abogada Ingrid Johana Reyes - Ingeniero José Julián Jaramillo Muñoz<br>
+        Todos los derechos reservados
+    </div>
+
+    <script>
+        // Configurar jsPDF
+        const { jsPDF } = window.jspdf;
+
+        // Datos iniciales
+        let pqrList = [];
+        let users = [
+            { username: "admin", fullname: "Ingrid Johana Reyes Burgos", password: "1026272023Ir*", role: "superadmin" },
+            { username: "escritura1", fullname: "Usuario Solo Escritura", password: "", role: "writer" }
+        ];
+        let auditLog = [];
+
+        let currentUser = null;
+
+        // Tipos de PQR con sus tiempos de respuesta
+        const pqrTypes = {
+            "Consulta": 30,
+            "Denuncia": 15,
+            "Especial": null,
+            "Petición": 15,
+            "Petición con enfoque diferencial": 10,
+            "Queja": 15,
+            "Reclamo": 15,
+            "Solicitud de congresista": 5,
+            "Solicitud de entidad pública": 10,
+            "Solicitud de información o documentos": 10,
+            "Traslado por competencia": 5,
+            "Sugerencia": null,
+            "Felicitaciones": null
+        };
+
+        // Días festivos en Colombia para 2025, 2026 y 2027
+        const holidays = {
+            "2025": [
+                "2025-01-01", "2025-01-06", "2025-03-24", "2025-04-17", "2025-04-18",
+                "2025-05-01", "2025-05-12", "2025-06-23", "2025-06-30", "2025-07-20",
+                "2025-08-07", "2025-08-18", "2025-10-13", "2025-11-03", "2025-11-17",
+                "2025-12-08", "2025-12-25"
+            ],
+            "2026": [
+                "2026-01-01", "2026-01-12", "2026-03-23", "2026-04-02", "2026-04-03",
+                "2026-05-01", "2026-05-25", "2026-06-15", "2026-06-22", "2026-07-20",
+                "2026-08-07", "2026-08-17", "2026-10-12", "2026-11-02", "2026-11-16",
+                "2026-12-08", "2026-12-25"
+            ],
+            "2027": [
+                "2027-01-01", "2027-01-11", "2027-03-22", "2027-04-22", "2027-04-23",
+                "2027-05-01", "2027-05-17", "2027-06-07", "2027-06-14", "2027-07-20",
+                "2027-08-07", "2027-08-16", "2027-10-11", "2027-11-01", "2027-11-15",
+                "2027-12-08", "2027-12-25"
+            ]
+        };
+
+        // Función para verificar si una fecha es festivo
+        function isHoliday(date) {
+            const year = date.getFullYear().toString();
+            const dateStr = date.toISOString().split('T')[0];
+            return holidays[year] && holidays[year].includes(dateStr);
+        }
+
+        // Función para calcular la fecha de vencimiento excluyendo sábados, domingos y festivos
+        function calculateDueDate(days, startDate = new Date()) {
+            if (!days) return null;
+            
+            const date = new Date(startDate);
+            let addedDays = 0;
+            
+            while (addedDays < days) {
+                date.setDate(date.getDate() + 1);
+                
+                // No contamos sábados (6), domingos (0) ni festivos
+                if (date.getDay() !== 0 && date.getDay() !== 6 && !isHoliday(date)) {
+                    addedDays++;
+                }
+            }
+            
+            return date;
+        }
+
+        // Función para determinar el nivel de alerta
+        function getAlertLevel(dueDate) {
+            if (!dueDate) return null;
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Ignorar la hora para la comparación
+            
+            // Si la fecha ya pasó
+            if (dueDate < today) return "vencida";
+            
+            const timeDiff = dueDate.getTime() - today.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            if (daysDiff <= 3) return "inmediata"; // 3 días antes como alerta inmediata
+            if (daysDiff <= 7) return "media"; // 7 días antes como alerta media
+            return "baja";
+        }
+
+        // Función para formatear fecha
+        function formatDate(date) {
+            if (!date) return "N/A";
+            return date.toLocaleDateString('es-ES');
+        }
+
+        // Función para mostrar notificación
+        function showNotification(message, type = "success") {
+            const notification = document.createElement("div");
+            notification.textContent = message;
+            notification.style.position = "fixed";
+            notification.style.top = "20px";
+            notification.style.right = "20px";
+            notification.style.padding = "10px 20px";
+            notification.style.backgroundColor = type === "success" ? "#4CAF50" : "#f44336";
+            notification.style.color = "white";
+            notification.style.borderRadius = "5px";
+            notification.style.zIndex = "1000";
+            notification.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = "0";
+                setTimeout(() => document.body.removeChild(notification), 500);
+            }, 3000);
+        }
+
+        // Función para registrar acciones en el log de auditoría
+        function logAction(action, details = {}) {
+            const timestamp = new Date();
+            const logEntry = {
+                timestamp,
+                user: currentUser ? currentUser.username : 'system',
+                action,
+                details
+            };
+            auditLog.push(logEntry);
+            saveData();
+            updateAuditDisplay();
+        }
+
+        // Función para actualizar la visualización del log
+        function updateAuditDisplay() {
+            const auditContainer = document.getElementById("audit-log");
+            auditContainer.innerHTML = "";
+            
+            auditLog.slice().reverse().forEach(entry => {
+                const entryElement = document.createElement("div");
+                entryElement.className = "log-entry";
+                entryElement.innerHTML = `
+                    <div class="log-timestamp">${entry.timestamp.toLocaleString()}</div>
+                    <strong>${entry.user}</strong>: ${entry.action}
+                    ${entry.details ? `<div>${JSON.stringify(entry.details)}</div>` : ''}
+                `;
+                auditContainer.appendChild(entryElement);
+            });
+        }
+
+        // Función para exportar el log de auditoría a PDF
+        function exportAuditLog() {
+            const doc = new jsPDF();
+            
+            // Título
+            doc.setFontSize(18);
+            doc.text("Registro de Auditoría PQR", 14, 15);
+            doc.setFontSize(12);
+            doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 22);
+            doc.text(`Generado por: ${currentUser.fullname}`, 14, 29);
+            
+            // Tabla de datos
+            const headers = [
+                "Fecha/Hora", 
+                "Usuario", 
+                "Acción", 
+                "Detalles"
+            ];
+            
+            const rows = auditLog.map(entry => [
+                entry.timestamp.toLocaleString(),
+                entry.user,
+                entry.action,
+                entry.details ? JSON.stringify(entry.details) : ""
+            ]);
+            
+            doc.autoTable({
+                startY: 35,
+                head: [headers],
+                body: rows,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [40, 62, 80],
+                    textColor: 255
+                },
+                alternateRowStyles: {
+                    fillColor: [240, 240, 240]
+                },
+                columnStyles: {
+                    0: { cellWidth: 25 },
+                    1: { cellWidth: 20 },
+                    2: { cellWidth: 40 },
+                    3: { cellWidth: 105 }
+                },
+                margin: { top: 35 }
+            });
+            
+            // Pie de página con firma
+            const pageHeight = doc.internal.pageSize.height;
+            doc.setFontSize(10);
+            doc.text("Creado por: Abogada Ingrid Johana Reyes - Ingeniero José Julián Jaramillo Muñoz", 14, pageHeight - 20);
+            doc.text("Todos los derechos reservados", 14, pageHeight - 15);
+            
+            // Guardar PDF
+            doc.save(`auditoria_pqr_${new Date().toISOString().slice(0,10)}.pdf`);
+            
+            logAction("Exportó el registro de auditoría a PDF");
+        }
+
+        // Función para exportar a Excel
+        function exportToExcel() {
+            // Preparar los datos
+            const data = [
+                ["ID", "Tipo", "Peticionario", "Fecha Registro", "Fecha Vencimiento", "Estado", "Alerta", "Acuse Recibido"]
+            ];
+            
+            // Aplicar filtro actual
+            const filter = document.getElementById("search-filter").value;
+            const filteredPQRs = pqrList.filter(pqr => {
+                if (filter === "pending") return pqr.status !== "Completado";
+                if (filter === "completed") return pqr.status === "Completado";
+                if (filter === "alert-baja") return pqr.alert === "baja";
+                if (filter === "alert-media") return pqr.alert === "media";
+                if (filter === "alert-inmediata") return pqr.alert === "inmediata";
+                if (filter === "alert-vencida") return pqr.alert === "vencida";
+                return true;
+            });
+            
+            filteredPQRs.forEach(pqr => {
+                data.push([
+                    pqr.id,
+                    pqr.type,
+                    pqr.petitionerName,
+                    formatDate(pqr.registrationDate),
+                    formatDate(pqr.dueDate),
+                    pqr.status,
+                    pqr.alert ? pqr.alert.charAt(0).toUpperCase() + pqr.alert.slice(1) : "N/A",
+                    pqr.acknowledged ? "SÍ" : "NO"
+                ]);
+            });
+            
+            // Crear libro de Excel
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, "PQRs");
+            
+            // Exportar
+            XLSX.writeFile(wb, `pqrs_${new Date().toISOString().slice(0,10)}.xlsx`);
+            
+            logAction("Exportó PQRs a Excel", { filter });
+            showNotification("Archivo Excel generado correctamente", "success");
+        }
+
+        // Función para exportar a PDF
+        function exportToPDF() {
+            const doc = new jsPDF();
+            
+            // Título
+            doc.setFontSize(18);
+            doc.text("Reporte de PQRs", 14, 15);
+            doc.setFontSize(12);
+            doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 22);
+            doc.text(`Generado por: ${currentUser.fullname}`, 14, 29);
+            
+            // Aplicar filtro actual
+            const filter = document.getElementById("search-filter").value;
+            const filteredPQRs = pqrList.filter(pqr => {
+                if (filter === "pending") return pqr.status !== "Completado";
+                if (filter === "completed") return pqr.status === "Completado";
+                if (filter === "alert-baja") return pqr.alert === "baja";
+                if (filter === "alert-media") return pqr.alert === "media";
+                if (filter === "alert-inmediata") return pqr.alert === "inmediata";
+                if (filter === "alert-vencida") return pqr.alert === "vencida";
+                return true;
+            });
+            
+            // Tabla de datos
+            const headers = [
+                "ID", 
+                "Tipo", 
+                "Peticionario", 
+                "Fecha Reg.", 
+                "Fecha Ven.", 
+                "Estado", 
+                "Alerta",
+                "Acuse Recibido"
+            ];
+            
+            const rows = filteredPQRs.map(pqr => [
+                pqr.id,
+                pqr.type,
+                pqr.petitionerName,
+                formatDate(pqr.registrationDate),
+                formatDate(pqr.dueDate),
+                pqr.status,
+                pqr.alert ? pqr.alert.charAt(0).toUpperCase() + pqr.alert.slice(1) : "N/A",
+                pqr.acknowledged ? "SÍ" : "NO"
+            ]);
+            
+            doc.autoTable({
+                startY: 35,
+                head: [headers],
+                body: rows,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [40, 62, 80],
+                    textColor: 255
+                },
+                alternateRowStyles: {
+                    fillColor: [240, 240, 240]
+                },
+                columnStyles: {
+                    0: { cellWidth: 10 },
+                    1: { cellWidth: 25 },
+                    2: { cellWidth: 35 },
+                    3: { cellWidth: 20 },
+                    4: { cellWidth: 20 },
+                    5: { cellWidth: 20 },
+                    6: { cellWidth: 15 },
+                    7: { cellWidth: 15 }
+                }
+            });
+            
+            // Pie de página con firma
+            const pageHeight = doc.internal.pageSize.height;
+            doc.setFontSize(10);
+            doc.text("Creado por: Abogada Ingrid Johana Reyes - Ingeniero José Julián Jaramillo Muñoz", 14, pageHeight - 20);
+            doc.text("Todos los derechos reservados", 14, pageHeight - 15);
+            
+            // Guardar PDF
+            doc.save(`pqrs_${new Date().toISOString().slice(0,10)}.pdf`);
+            
+            logAction("Exportó PQRs a PDF", { filter });
+            showNotification("Archivo PDF generado correctamente", "success");
+        }
+
+        // Función para cargar PQRs en la tabla
+        function loadPQRs(filter = "all") {
+            const tbody = document.querySelector("#pqr-table tbody");
+            tbody.innerHTML = "";
+            
+            let bajaCount = 0;
+            let mediaCount = 0;
+            let inmediataCount = 0;
+            let vencidaCount = 0;
+            
+            pqrList.forEach(pqr => {
+                // Actualizar alerta antes de filtrar
+                pqr.alert = getAlertLevel(pqr.dueDate);
+                
+                // Aplicar filtro
+                if (filter === "pending" && pqr.status === "Completado") return;
+                if (filter === "completed" && pqr.status !== "Completado") return;
+                if (filter === "alert-baja" && pqr.alert !== "baja") return;
+                if (filter === "alert-media" && pqr.alert !== "media") return;
+                if (filter === "alert-inmediata" && pqr.alert !== "inmediata") return;
+                if (filter === "alert-vencida" && pqr.alert !== "vencida") return;
+                
+                // Contar alertas
+                if (pqr.alert === "baja") bajaCount++;
+                if (pqr.alert === "media") mediaCount++;
+                if (pqr.alert === "inmediata") inmediataCount++;
+                if (pqr.alert === "vencida") vencidaCount++;
+                
+                const row = document.createElement("tr");
+                if (pqr.alert === "baja") row.classList.add("alert-baja");
+                if (pqr.alert === "media") row.classList.add("alert-media");
+                if (pqr.alert === "inmediata") row.classList.add("alert-inmediata");
+                if (pqr.alert === "vencida") row.classList.add("alert-vencida");
+                
+                row.innerHTML = `
+                    <td>${pqr.id}</td>
+                    <td>${pqr.type}</td>
+                    <td>${pqr.petitionerName}</td>
+                    <td>${formatDate(pqr.registrationDate)}</td>
+                    <td>${formatDate(pqr.dueDate)}</td>
+                    <td>${pqr.status}</td>
+                    <td>${pqr.alert ? pqr.alert.charAt(0).toUpperCase() + pqr.alert.slice(1) : "N/A"}</td>
+                    <td>
+                        ${pqr.acknowledged ? 
+                            '<span style="color: green;">SÍ</span>' : 
+                            '<span style="color: red;">NO</span>'}
+                        ${currentUser.role === "admin" || currentUser.role === "superadmin" ? 
+                          `<button class="acknowledge-btn ${pqr.acknowledged ? 'no' : ''}" data-id="${pqr.id}">${pqr.acknowledged ? 'NO' : 'SÍ'}</button>` : ''}
+                    </td>
+                    <td>
+                        <button class="btn view-btn" data-id="${pqr.id}">Ver</button>
+                        ${currentUser.role === "admin" || currentUser.role === "superadmin" ? 
+                          `<button class="btn complete-btn" data-id="${pqr.id}">Completar</button>` : ''}
+                        ${currentUser.role === "superadmin" ? 
+                          `<button class="btn delete-btn" data-id="${pqr.id}">Eliminar</button>` : ''}
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Actualizar contadores de alertas
+            document.getElementById("baja-count").textContent = bajaCount;
+            document.getElementById("media-count").textContent = mediaCount;
+            document.getElementById("inmediata-count").textContent = inmediataCount;
+            document.getElementById("vencida-count").textContent = vencidaCount;
+            
+            // Agregar event listeners a los botones
+            document.querySelectorAll(".view-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const id = parseInt(this.getAttribute("data-id"));
+                    viewPQR(id);
+                });
+            });
+            
+            document.querySelectorAll(".complete-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const id = parseInt(this.getAttribute("data-id"));
+                    completePQR(id);
+                });
+            });
+            
+            document.querySelectorAll(".delete-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const id = parseInt(this.getAttribute("data-id"));
+                    deletePQR(id);
+                });
+            });
+            
+            document.querySelectorAll(".acknowledge-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const id = parseInt(this.getAttribute("data-id"));
+                    toggleAcknowledge(id);
+                });
+            });
+        }
+
+        // Función para alternar el estado de acuse de recibo
+        function toggleAcknowledge(id) {
+            const pqr = pqrList.find(p => p.id === id);
+            if (!pqr) return;
+            
+            pqr.acknowledged = !pqr.acknowledged;
+            saveData();
+            loadPQRs(document.getElementById("search-filter").value);
+            
+            logAction(`Marcó acuse de recibo como ${pqr.acknowledged ? 'SÍ' : 'NO'}`, { 
+                pqrId: id,
+                pqrType: pqr.type
+            });
+            showNotification(`Acuse de recibo actualizado a ${pqr.acknowledged ? 'SÍ' : 'NO'}`, "success");
+        }
+
+        // Función para ver detalles de PQR
+        function viewPQR(id) {
+            const pqr = pqrList.find(p => p.id === id);
+            if (!pqr) return;
+            
+            alert(`
+                Detalles de PQR #${pqr.id}
+                -------------------------
+                Tipo: ${pqr.type}
+                Peticionario: ${pqr.petitionerName}
+                Identificación: ${pqr.petitionerId || "No registrada"}
+                Email: ${pqr.petitionerEmail || "No registrado"}
+                Teléfono: ${pqr.petitionerPhone || "No registrado"}
+                Fecha Registro: ${formatDate(pqr.registrationDate)}
+                Fecha Vencimiento: ${formatDate(pqr.dueDate)}
+                Estado: ${pqr.status}
+                Alerta: ${pqr.alert ? pqr.alert.charAt(0).toUpperCase() + pqr.alert.slice(1) : "N/A"}
+                Acuse Recibido: ${pqr.acknowledged ? 'SÍ' : 'NO'}
+                Descripción:
+                ${pqr.description || "No hay descripción"}
+                -------------------------
+                Creado por: ${pqr.createdBy}
+            `);
+            
+            logAction("Vio detalles de PQR", { pqrId: id });
+        }
+
+        // Función para marcar PQR como completado
+        function completePQR(id) {
+            const pqr = pqrList.find(p => p.id === id);
+            if (!pqr) return;
+            
+            pqr.status = "Completado";
+            pqr.alert = null;
+            saveData();
+            loadPQRs(document.getElementById("search-filter").value);
+            
+            logAction("Marcó PQR como completada", { pqrId: id, pqrType: pqr.type });
+            showNotification("PQR marcada como completada", "success");
+        }
+
+        // Función para eliminar PQR (solo superadmin)
+        function deletePQR(id) {
+            if (currentUser.role !== "superadmin") return;
+            
+            const pqrIndex = pqrList.findIndex(p => p.id === id);
+            if (pqrIndex === -1) return;
+            
+            const deletedPQR = pqrList[pqrIndex];
+            
+            if (!confirm(`¿Está seguro de eliminar la PQR #${id} (${deletedPQR.type})?`)) return;
+            
+            pqrList.splice(pqrIndex, 1);
+            saveData();
+            loadPQRs(document.getElementById("search-filter").value);
+            
+            logAction("Eliminó una PQR", { pqrId: id, pqrType: deletedPQR.type });
+            showNotification("PQR eliminada correctamente", "success");
+        }
+
+        // Función para cargar usuarios en la tabla
+        function loadUsers() {
+            const tbody = document.querySelector("#users-table tbody");
+            tbody.innerHTML = "";
+            
+            users.forEach(user => {
+                const row = document.createElement("tr");
+                
+                let roleText = "";
+                if (user.role === "superadmin") roleText = "Super Administrador";
+                else if (user.role === "admin") roleText = "Administrador";
+                else if (user.role === "writer") roleText = "Solo escritura";
+                
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.fullname}</td>
+                    <td>${roleText}</td>
+                    <td>
+                        ${currentUser.role === "superadmin" && user.role !== "superadmin" ? 
+                          `<button class="btn delete-user-btn" data-username="${user.username}">Eliminar</button>` : 
+                          '<span class="user-type">No editable</span>'}
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Agregar event listeners a los botones de eliminar
+            document.querySelectorAll(".delete-user-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const username = this.getAttribute("data-username");
+                    deleteUser(username);
+                });
+            });
+        }
+
+        // Función para eliminar usuario
+        function deleteUser(username) {
+            if (!confirm(`¿Está seguro de eliminar al usuario ${username}?`)) return;
+            
+            users = users.filter(u => u.username !== username);
+            saveData();
+            loadUsers();
+            
+            logAction("Eliminó un usuario", { username });
+            showNotification("Usuario eliminado correctamente", "success");
+        }
+
+        // Función para guardar datos en localStorage
+        function saveData() {
+            // Convertir fechas a strings antes de guardar
+            const pqrListToSave = pqrList.map(pqr => ({
+                ...pqr,
+                registrationDate: pqr.registrationDate.toISOString(),
+                dueDate: pqr.dueDate ? pqr.dueDate.toISOString() : null
+            }));
+            
+            localStorage.setItem("pqrList", JSON.stringify(pqrListToSave));
+            localStorage.setItem("users", JSON.stringify(users));
+            localStorage.setItem("auditLog", JSON.stringify(auditLog));
+            
+            // Guardar credenciales si está marcado "Recordar"
+            if (document.getElementById("remember-me").checked && currentUser) {
+                localStorage.setItem("rememberedUser", JSON.stringify({
+                    username: currentUser.username,
+                    password: currentUser.password
+                }));
+            } else {
+                localStorage.removeItem("rememberedUser");
+            }
+        }
+
+        // Función para cargar datos de localStorage
+        function loadData() {
+            const savedPQRs = localStorage.getItem("pqrList");
+            const savedUsers = localStorage.getItem("users");
+            const savedAudit = localStorage.getItem("auditLog");
+            const rememberedUser = localStorage.getItem("rememberedUser");
+            
+            if (savedPQRs) {
+                pqrList = JSON.parse(savedPQRs);
+                // Convertir strings de fecha a objetos Date
+                pqrList = pqrList.map(pqr => ({
+                    ...pqr,
+                    registrationDate: new Date(pqr.registrationDate),
+                    dueDate: pqr.dueDate ? new Date(pqr.dueDate) : null,
+                    acknowledged: pqr.acknowledged || false // Asegurar que existe el campo
+                }));
+            }
+            
+            if (savedUsers) users = JSON.parse(savedUsers);
+            if (savedAudit) auditLog = JSON.parse(savedAudit);
+            
+            // Cargar credenciales recordadas
+            if (rememberedUser) {
+                const { username, password } = JSON.parse(rememberedUser);
+                document.getElementById("login-username").value = username;
+                document.getElementById("login-password").value = password;
+                document.getElementById("remember-me").checked = true;
+            }
+            
+            // Asegurar que el superadmin exista con las credenciales correctas
+            const superAdminExists = users.some(u => 
+                u.username === "admin" && 
+                u.role === "superadmin" &&
+                u.fullname === "Ingrid Johana Reyes Burgos" &&
+                u.password === "1026272023Ir*"
+            );
+            
+            if (!superAdminExists) {
+                // Eliminar cualquier otro admin incorrecto
+                users = users.filter(u => u.role !== "superadmin");
+                
+                // Agregar el superadmin correcto
+                users.push({ 
+                    username: "admin", 
+                    fullname: "Ingrid Johana Reyes Burgos", 
+                    password: "1026272023Ir*", 
+                    role: "superadmin" 
+                });
+                saveData();
+            }
+        }
+
+        // Función para inicializar la aplicación
+        function initApp() {
+            // Configurar eventos de pestañas
+            document.querySelectorAll(".tab-link").forEach(link => {
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    
+                    // Remover clase active de todas las pestañas y contenidos
+                    document.querySelectorAll(".tab-link").forEach(l => l.classList.remove("active"));
+                    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+                    
+                    // Agregar clase active a la pestaña seleccionada
+                    this.classList.add("active");
+                    
+                    // Mostrar el contenido correspondiente
+                    const tabId = this.getAttribute("data-tab");
+                    document.getElementById(tabId).classList.add("active");
+                    
+                    // Si es la pestaña de consulta, cargar PQRs
+                    if (tabId === "consult") {
+                        loadPQRs(document.getElementById("search-filter").value);
+                    }
+                });
+            });
+            
+            // Configurar evento de logout
+            document.getElementById("logout-btn").addEventListener("click", function(e) {
+                e.preventDefault();
+                logAction("Cerró sesión");
+                currentUser = null;
+                document.getElementById("login-container").style.display = "block";
+                document.getElementById("main-container").style.display = "none";
+            });
+            
+            // Configurar evento de filtro
+            document.getElementById("search-filter").addEventListener("change", function() {
+                loadPQRs(this.value);
+            });
+            
+            // Configurar evento de tipo de PQR
+            document.getElementById("pqr-type").addEventListener("change", function() {
+                const selectedType = this.value;
+                const responseTimeInput = document.getElementById("response-time");
+                const specialTimeGroup = document.getElementById("special-time-group");
+                
+                if (selectedType === "Especial") {
+                    responseTimeInput.value = "";
+                    specialTimeGroup.style.display = "block";
+                } else {
+                    responseTimeInput.value = pqrTypes[selectedType] || "";
+                    specialTimeGroup.style.display = "none";
+                }
+            });
+            
+            // Configurar evento de formulario de PQR
+            document.getElementById("pqr-form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                
+                const type = document.getElementById("pqr-type").value;
+                let responseDays = document.getElementById("response-time").value;
+                const specialTime = document.getElementById("special-time").value;
+                const petitionerName = document.getElementById("petitioner-name").value;
+                const petitionerId = document.getElementById("petitioner-id").value;
+                const petitionerEmail = document.getElementById("petitioner-email").value;
+                const petitionerPhone = document.getElementById("petitioner-phone").value;
+                const description = document.getElementById("pqr-description").value;
+                const registrationDateInput = document.getElementById("registration-date").value;
+                const registrationDate = registrationDateInput ? new Date(registrationDateInput) : new Date();
+                
+                if (type === "Especial") {
+                    if (!specialTime) {
+                        showNotification("Debe especificar un término especial", "error");
+                        return;
+                    }
+                    responseDays = parseInt(specialTime);
+                }
+                
+                const dueDate = calculateDueDate(parseInt(responseDays), registrationDate);
+                const alertLevel = getAlertLevel(dueDate);
+                
+                const newPQR = {
+                    id: pqrList.length > 0 ? Math.max(...pqrList.map(p => p.id)) + 1 : 1,
+                    type,
+                    responseDays: parseInt(responseDays),
+                    petitionerName,
+                    petitionerId,
+                    petitionerEmail,
+                    petitionerPhone,
+                    description,
+                    registrationDate,
+                    dueDate,
+                    status: "Pendiente",
+                    alert: alertLevel,
+                    acknowledged: false,
+                    createdBy: currentUser.fullname
+                };
+                
+                pqrList.push(newPQR);
+                saveData();
+                
+                // Limpiar formulario
+                this.reset();
+                document.getElementById("special-time-group").style.display = "none";
+                document.getElementById("registration-date").value = "";
+                
+                logAction("Registró una nueva PQR", {
+                    pqrId: newPQR.id,
+                    type: newPQR.type,
+                    petitioner: newPQR.petitionerName
+                });
+                showNotification("PQR registrada correctamente", "success");
+                
+                // Recargar la tabla de PQRs
+                loadPQRs();
+            });
+            
+            // Configurar evento de formulario de usuario
+            document.getElementById("user-form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById("new-username").value;
+                const fullname = document.getElementById("new-fullname").value;
+                const role = document.getElementById("new-role").value;
+                
+                if (users.some(u => u.username === username)) {
+                    showNotification("El nombre de usuario ya existe", "error");
+                    return;
+                }
+                
+                const newUser = {
+                    username,
+                    fullname,
+                    password: "", // Sin contraseña para usuarios de solo escritura
+                    role
+                };
+                
+                // Solo superadmin puede crear administradores
+                if (role === "admin" && currentUser.role !== "superadmin") {
+                    showNotification("Solo el Super Admin puede crear administradores", "error");
+                    return;
+                }
+                
+                users.push(newUser);
+                saveData();
+                
+                // Limpiar formulario
+                this.reset();
+                
+                logAction("Creó un nuevo usuario", { username, role });
+                showNotification("Usuario creado correctamente", "success");
+                loadUsers();
+            });
+            
+            // Configurar evento de login
+            document.getElementById("login-btn").addEventListener("click", function() {
+                const username = document.getElementById("login-username").value.trim();
+                const password = document.getElementById("login-password").value;
+                
+                // Buscar usuario
+                const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+                
+                if (user) {
+                    // Verificar contraseña solo si existe
+                    if (user.password && user.password !== password) {
+                        showNotification("Contraseña incorrecta", "error");
+                        return;
+                    }
+                    
+                    currentUser = user;
+                    document.getElementById("login-container").style.display = "none";
+                    document.getElementById("main-container").style.display = "block";
+                    
+                    // Mostrar información del usuario
+                    let roleText = "";
+                    if (user.role === "superadmin") roleText = "Super Admin";
+                    else if (user.role === "admin") roleText = "Admin";
+                    else roleText = "Solo Escritura";
+                    
+                    document.getElementById("user-info").textContent = `Usuario: ${user.fullname} (${roleText})`;
+                    
+                    // Mostrar controles según permisos
+                    document.getElementById("admin-controls").style.display = 
+                        (user.role === "superadmin" || user.role === "admin") ? "block" : "none";
+                    
+                    // Mostrar pestaña de auditoría solo a superadmin
+                    document.getElementById("audit-tab").style.display = 
+                        user.role === "superadmin" ? "list-item" : "none";
+                    
+                    // Cargar datos iniciales
+                    loadPQRs();
+                    loadUsers();
+                    updateAuditDisplay();
+                    
+                    logAction("Inició sesión en el sistema");
+                } else {
+                    showNotification("Usuario no encontrado", "error");
+                }
+            });
+            
+            // Configurar botones de exportación
+            document.getElementById("export-excel-btn").addEventListener("click", exportToExcel);
+            document.getElementById("export-pdf-btn").addEventListener("click", exportToPDF);
+            document.getElementById("export-audit-btn").addEventListener("click", exportAuditLog);
+            
+            // Establecer la fecha actual por defecto en el campo de fecha de registro
+            const today = new Date();
+            const formattedDate = today.toISOString().substr(0, 10);
+            document.getElementById("registration-date").value = formattedDate;
+        }
+
+        // Inicializar la aplicación cuando el DOM esté listo
+        document.addEventListener("DOMContentLoaded", function() {
+            loadData();
+            initApp();
+        });
+    </script>
+</body>
+</html>
